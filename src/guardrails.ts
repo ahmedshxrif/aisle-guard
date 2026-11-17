@@ -134,10 +134,16 @@ export function checkReply(rawReply: string, products: Product[], policy: Partia
 
   // Names are compared with everything but letters and digits removed, so "Frost-line" and
   // "F r o s t l i n e" are caught along with "Frostline".
-  const squash = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, "");
+  // The names go through the same clean-up as the reply, so an accented name such as "Électra"
+  // is compared like for like.
+  const squash = (value: string) => normalise(value).toLowerCase().replace(/[^a-z0-9]/g, "");
   const squashed = squash(reply);
   for (const name of rules.competitors) {
-    if (squash(name) && squashed.includes(squash(name))) {
+    const key = squash(name);
+    // A name with no Latin letters or digits cannot be matched by these rules. Refuse it loudly
+    // instead of silently never matching.
+    if (!key) throw new RangeError(`Competitor name "${name}" cannot be checked: it has no Latin letters or digits`);
+    if (squashed.includes(key)) {
       violations.push({ rule: "competitor", excerpt: name, detail: "Never name another brand. Talk about what this product does well instead." });
     }
   }

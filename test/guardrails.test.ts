@@ -92,3 +92,12 @@ test("a price spelled out is caught without a currency word", () => {
   assert.deepEqual(rules("It costs about two thousand."), ["price"]);
   assert.deepEqual(rules("It's fifty percent off."), ["price"]);
 });
+
+test("brand names in the block list are cleaned up the same way as the reply", () => {
+  assert.equal(checkReply("Better than Electra.", [fridge], { competitors: ["\u00c9lectra"] }).ok, false);
+  assert.equal(checkReply("Better than \u00c9lectra.", [fridge], { competitors: ["Electra"] }).ok, false);
+});
+
+test("a brand name the rules cannot match is refused, not ignored", () => {
+  assert.throws(() => checkReply("Hello.", [fridge], { competitors: ["\u0633\u0627\u0645"] }), RangeError);
+});

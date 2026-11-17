@@ -71,7 +71,7 @@ git clone https://github.com/ahmedshxrif/aisle-guard
 cd aisle-guard
 npm install
 
-npm test          # 36 tests
+npm test          # 38 tests
 npm run eval      # 44 labelled replies, every verdict checked
 npm run chat      # talk to it in the terminal
 ```
