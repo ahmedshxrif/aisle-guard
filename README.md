@@ -40,6 +40,23 @@ This repository is that idea, rebuilt without any company's products or data.
 
 The number rule is the interesting one. It reads every "number + unit" in the reply (650 litres, 39 dB, 91.2 cm) and only lets it through if the spec sheet of the product being discussed has that exact figure.
 
+## Checking many replies
+
+`check` takes one reply as an argument, or many replies from a file or from standard input, one per line. Blank lines are skipped.
+
+```bash
+aisle-guard check --file replies.txt --product fridge-650
+cat replies.txt | aisle-guard check --product fridge-650
+```
+
+Add `--json` to print one JSON object per reply, one per line:
+
+```json
+{"reply":"It never breaks","ok":false,"violations":[{"rule":"absolute-claim","excerpt":"never breaks","detail":"Do not promise things the spec sheet cannot back."}]}
+```
+
+`ok` is `true` and `violations` is empty when the reply can be spoken. The exit code is 1 when any reply is blocked, 2 for a usage error such as an unreadable file, and 0 otherwise.
+
 ## How a reply travels
 
 ```mermaid
@@ -71,7 +88,7 @@ git clone https://github.com/ahmedshxrif/aisle-guard
 cd aisle-guard
 npm install
 
-npm test          # 38 tests
+npm test          # 46 tests
 npm run eval      # 44 labelled replies, every verdict checked
 npm run chat      # talk to it in the terminal
 ```
@@ -124,6 +141,7 @@ console.log(reply.text, reply.source, reply.caught);
 |---|---|
 | `src/guardrails.ts` | The five rules |
 | `src/assistant.ts` | Routing, the retry and the fallback |
+| `src/check.ts` | Reading replies from a file or input, and the JSON output |
 | `src/fit.ts` | "Will it fit?" arithmetic |
 | `src/budget.ts` | The spending cap |
 | `src/model.ts` | The model behind a one-method interface, plus a scripted stand-in for tests |
