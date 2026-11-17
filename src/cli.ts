@@ -1,33 +1,44 @@
 #!/usr/bin/env node
-// aisle-guard check "<reply>" [--product <id>]   check one reply against the rules
+// aisle-guard check "<reply>" [--product <id>] [--file <path>] [--json]   check replies against the rules
 // aisle-guard chat                               talk to the assistant in the terminal
 
+import { readFileSync } from "node:fs";
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout, argv, exit, env } from "node:process";
+import { checkReplies, parseCheckArgs, splitReplies } from "./check.ts";
 import { answer, anthropicModel, catalog, checkReply, findProduct, scriptedModel, type Session } from "./index.ts";
 
 const [command, ...rest] = argv.slice(2);
 
 if (command === "check") {
-  const flag = rest.indexOf("--product");
-  const product = flag >= 0 ? findProduct(rest[flag + 1] ?? "") : undefined;
-  if (flag >= 0 && !product) {
+  const args = parseCheckArgs(rest);
+  const product = args.product !== undefined ? findProduct(args.product) : undefined;
+  if (args.product !== undefined && !product) {
     console.error(`Unknown product. Try one of: ${catalog.map((p) => p.id).join(", ")}`);
     exit(2);
   }
-  const reply = rest.filter((_, i) => flag < 0 || (i !== flag && i !== flag + 1)).join(" ");
-  if (!reply) {
-    console.error('Usage: aisle-guard check "<reply>" [--product <id>]');
+  let replies: string[];
+  if (args.file !== undefined) {
+    try {
+      replies = splitReplies(readFileSync(args.file, "utf8"));
+    } catch {
+      console.error(`Cannot read file: ${args.file}`);
+      exit(2);
+    }
+  } else if (args.reply) {
+    replies = [args.reply];
+  } else if (!stdin.isTTY) {
+    replies = splitReplies(readFileSync(0, "utf8"));
+  } else {
+    replies = [];
+  }
+  if (replies.length === 0) {
+    console.error('Usage: aisle-guard check "<reply>" [--product <id>] [--file <path>] [--json]\n(with no reply, replies are read from standard input, one per line)');
     exit(2);
   }
-  const verdict = checkReply(reply, product ? [product] : catalog);
-  if (verdict.ok) {
-    console.log("OK: this reply can be spoken.");
-  } else {
-    console.log("BLOCKED:");
-    for (const v of verdict.violations) console.log(`  [${v.rule}] "${v.excerpt}" - ${v.detail}`);
-    exit(1);
-  }
+  const result = checkReplies(replies, product ? [product] : catalog, args.json);
+  console.log(result.output);
+  if (result.blocked) exit(1);
 } else if (command === "chat") {
   const live = Boolean(env.ANTHROPIC_API_KEY);
   // Without a key the chat still works: a scripted model plays the part, including one bad reply
@@ -52,5 +63,5 @@ if (command === "check") {
     console.log(`assistant [${result.source}] > ${result.text}`);
   }
 } else {
-  console.log('aisle-guard\n\n  check "<reply>" [--product <id>]   check one reply against the rules\n  chat                               talk to the assistant in the terminal');
+  console.log('aisle-guard\n\n  check "<reply>" [--product <id>] [--file <path>] [--json]\n                                     check replies against the rules\n  chat                               talk to the assistant in the terminal');
 }
