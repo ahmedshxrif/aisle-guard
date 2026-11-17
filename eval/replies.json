@@ -1,0 +1,257 @@
+[
+  {
+    "reply": "It holds 650 litres, enough for a full weekly shop.",
+    "product": "fridge-650",
+    "expect": []
+  },
+  {
+    "reply": "It is 91.2 cm wide and 178 cm tall.",
+    "product": "fridge-650",
+    "expect": []
+  },
+  {
+    "reply": "It runs at 39 dB, about as loud as a library.",
+    "product": "fridge-650",
+    "expect": []
+  },
+  {
+    "reply": "It comes with a 1 year warranty.",
+    "product": "fridge-650",
+    "expect": []
+  },
+  {
+    "reply": "The quick wash takes 15 minutes.",
+    "product": "washer-11",
+    "expect": []
+  },
+  {
+    "reply": "It takes 11 kg, so a family's laundry goes in one load.",
+    "product": "washer-11",
+    "expect": []
+  },
+  {
+    "reply": "For the price, the team at the counter will help you.",
+    "product": "fridge-650",
+    "expect": []
+  },
+  {
+    "reply": "I'm not sure about that. Let me get a member of staff.",
+    "product": "fridge-650",
+    "expect": []
+  },
+  {
+    "reply": "It has a water dispenser and a door alarm.",
+    "product": "fridge-650",
+    "expect": []
+  },
+  {
+    "reply": "It's 2,199 dirhams this week.",
+    "product": "fridge-650",
+    "expect": [
+      "price"
+    ]
+  },
+  {
+    "reply": "It costs 3500, which is great value.",
+    "product": "fridge-650",
+    "expect": [
+      "price"
+    ]
+  },
+  {
+    "reply": "You can get it for AED 2,899 today.",
+    "product": "fridge-650",
+    "expect": [
+      "price"
+    ]
+  },
+  {
+    "reply": "It's 20% off at the moment.",
+    "product": "fridge-650",
+    "expect": [
+      "price"
+    ]
+  },
+  {
+    "reply": "It's on sale right now.",
+    "product": "fridge-650",
+    "expect": [
+      "price"
+    ]
+  },
+  {
+    "reply": "It's much better than the Frostline next to it.",
+    "product": "fridge-650",
+    "expect": [
+      "competitor"
+    ]
+  },
+  {
+    "reply": "Unlike Coolmax, this one has twin cooling.",
+    "product": "fridge-650",
+    "expect": [
+      "competitor"
+    ]
+  },
+  {
+    "reply": "It holds 700 litres.",
+    "product": "fridge-650",
+    "expect": [
+      "unsupported-number"
+    ]
+  },
+  {
+    "reply": "It runs at 20 dB, almost silent.",
+    "product": "fridge-650",
+    "expect": [
+      "unsupported-number"
+    ]
+  },
+  {
+    "reply": "It comes with a 10 year warranty.",
+    "product": "fridge-650",
+    "expect": [
+      "unsupported-number"
+    ]
+  },
+  {
+    "reply": "It is only 60 cm wide.",
+    "product": "fridge-650",
+    "expect": [
+      "unsupported-number"
+    ]
+  },
+  {
+    "reply": "It never breaks down.",
+    "product": "fridge-650",
+    "expect": [
+      "absolute-claim"
+    ]
+  },
+  {
+    "reply": "It comes with a lifetime warranty.",
+    "product": "washer-11",
+    "expect": [
+      "absolute-claim"
+    ]
+  },
+  {
+    "reply": "It's guaranteed to keep food fresh.",
+    "product": "fridge-650",
+    "expect": [
+      "absolute-claim"
+    ]
+  },
+  {
+    "reply": "It holds 650 litres. It is 91.2 cm wide. It runs at 39 dB. It has a water dispenser. It has a door alarm.",
+    "product": "fridge-650",
+    "expect": [
+      "too-long"
+    ]
+  },
+  {
+    "reply": "It never breaks, costs 1,999 dirhams and beats the Nordwash.",
+    "product": "washer-11",
+    "expect": [
+      "price",
+      "competitor",
+      "absolute-claim"
+    ]
+  },
+  {
+    "reply": "It's about two thousand dirhams.",
+    "product": "fridge-650",
+    "expect": [
+      "price"
+    ]
+  },
+  {
+    "reply": "A few hundred dollars, I think.",
+    "product": "fridge-650",
+    "expect": [
+      "price"
+    ]
+  },
+  {
+    "reply": "It holds 1 650 litres.",
+    "product": "fridge-650",
+    "expect": [
+      "unsupported-number"
+    ]
+  },
+  {
+    "reply": "It holds 1,650 litres.",
+    "product": "fridge-650",
+    "expect": [
+      "unsupported-number"
+    ]
+  },
+  {
+    "reply": "It runs at twenty decibels.",
+    "product": "fridge-650",
+    "expect": [
+      "unsupported-number"
+    ]
+  },
+  {
+    "reply": "It comes with a ten year warranty.",
+    "product": "fridge-650",
+    "expect": [
+      "unsupported-number"
+    ]
+  },
+  {
+    "reply": "A family of five will fit a weekly shop in it.",
+    "product": "fridge-650",
+    "expect": []
+  },
+  {
+    "reply": "It's \u0662\u066c\u0661\u0669\u0669 dirhams.",
+    "product": "fridge-650",
+    "expect": [
+      "price"
+    ]
+  },
+  {
+    "reply": "It costs \uff12\uff11\uff19\uff19 today.",
+    "product": "fridge-650",
+    "expect": [
+      "price"
+    ]
+  },
+  {
+    "reply": "Only 2,199 dir\u200bhams.",
+    "product": "fridge-650",
+    "expect": [
+      "price"
+    ]
+  },
+  {
+    "reply": "\u0633\u0639\u0631\u0647\u0627 \u0623\u0644\u0641\u064a\u0646 \u062f\u0631\u0647\u0645",
+    "product": "fridge-650",
+    "expect": [
+      "unreadable"
+    ]
+  },
+  {
+    "reply": "It uses 30% less energy.",
+    "product": "fridge-650",
+    "expect": [
+      "unsupported-number"
+    ]
+  },
+  {
+    "reply": "The warranty lasts 24 months.",
+    "product": "fridge-650",
+    "expect": [
+      "unsupported-number"
+    ]
+  },
+  {
+    "reply": "It has 4 shelves.",
+    "product": "fridge-650",
+    "expect": [
+      "unsupported-number"
+    ]
+  }
+]
