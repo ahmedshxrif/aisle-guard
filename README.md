@@ -57,6 +57,20 @@ Add `--json` to print one JSON object per reply, one per line:
 
 `ok` is `true` and `violations` is empty when the reply can be spoken. The exit code is 1 when any reply is blocked, 2 for a usage error such as an unreadable file, and 0 otherwise.
 
+## Your own catalogue and policy
+
+The catalogue and the block list are built in, but you can bring your own as JSON files. Both `check` and `chat` take them:
+
+```bash
+aisle-guard check "It holds 9 kg." --product dryer-9 --catalog examples/products.json --policy examples/policy.json
+aisle-guard chat --catalog examples/products.json
+```
+
+- `--catalog` is a list of products. Each has an `id`, a `name`, a `category` (`refrigerator`, `washer` or `dryer`), `specs` (each with a `label`, a `value` and a `unit`) and optional `features`.
+- `--policy` is an object with any of `competitors`, `maxSentences`, `allowedNumbers` and `allowedPlainNumbers`. A field you leave out keeps its default.
+
+`examples/products.json` and `examples/policy.json` show the full shape. If a file is wrong, the command stops with exit code 2 and says which field to fix, for example `catalog[0].specs[1].unit: must be one of: l, kg, cm, ...`. In code, use `loadCatalog(path)` and `loadPolicy(path)`.
+
 ## How a reply travels
 
 ```mermaid
@@ -88,7 +102,7 @@ git clone https://github.com/ahmedshxrif/aisle-guard
 cd aisle-guard
 npm install
 
-npm test          # 46 tests
+npm test          # 59 tests
 npm run eval      # 44 labelled replies, every verdict checked
 npm run chat      # talk to it in the terminal
 ```
@@ -142,6 +156,7 @@ console.log(reply.text, reply.source, reply.caught);
 | `src/guardrails.ts` | The five rules |
 | `src/assistant.ts` | Routing, the retry and the fallback |
 | `src/check.ts` | Reading replies from a file or input, and the JSON output |
+| `src/config.ts` | Loading and checking the catalogue and policy files |
 | `src/fit.ts` | "Will it fit?" arithmetic |
 | `src/budget.ts` | The spending cap |
 | `src/model.ts` | The model behind a one-method interface, plus a scripted stand-in for tests |

@@ -1,0 +1,11 @@
+{
+  "competitors": [
+    "Frostline",
+    "Coolmax",
+    "Nordwash",
+    "Brand X"
+  ],
+  "maxSentences": 3,
+  "allowedNumbers": [],
+  "allowedPlainNumbers": []
+}

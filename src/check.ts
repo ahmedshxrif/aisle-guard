@@ -1,11 +1,13 @@
 // The logic behind `aisle-guard check`, kept apart from the CLI so tests can call it directly.
 
-import { checkReply, type Verdict } from "./guardrails.ts";
+import { checkReply, type Policy, type Verdict } from "./guardrails.ts";
 import type { Product } from "./catalog.ts";
 
 export interface CheckArgs {
   product?: string;
   file?: string;
+  catalog?: string;
+  policy?: string;
   json: boolean;
   reply: string;
 }
@@ -18,6 +20,8 @@ export function parseCheckArgs(args: string[]): CheckArgs {
     if (arg === "--json") parsed.json = true;
     else if (arg === "--product") parsed.product = args[++i] ?? "";
     else if (arg === "--file") parsed.file = args[++i] ?? "";
+    else if (arg === "--catalog") parsed.catalog = args[++i] ?? "";
+    else if (arg === "--policy") parsed.policy = args[++i] ?? "";
     else words.push(arg);
   }
   parsed.reply = words.join(" ");
@@ -56,10 +60,16 @@ function formatText(replies: string[], verdicts: Verdict[]): string {
   return lines.join("\n");
 }
 
-export function checkReplies(replies: string[], products: Product[], json: boolean): CheckResult {
-  const verdicts = replies.map((reply) => checkReply(reply, products));
+export function checkReplies(replies: string[], products: Product[], json: boolean, policy: Partial<Policy> = {}): CheckResult {
+  const verdicts = replies.map((reply) => checkReply(reply, products, policy));
   return {
     output: json ? formatJson(replies, verdicts) : formatText(replies, verdicts),
     blocked: verdicts.some((v) => !v.ok),
   };
+}
+
+// `chat` takes the same two files as `check`.
+export function parseChatArgs(args: string[]): { catalog?: string; policy?: string } {
+  const { catalog, policy } = parseCheckArgs(args);
+  return { ...(catalog !== undefined && { catalog }), ...(policy !== undefined && { policy }) };
 }

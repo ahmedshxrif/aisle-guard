@@ -1,0 +1,185 @@
+[
+  {
+    "id": "fridge-650",
+    "name": "French-door refrigerator, 650 L",
+    "category": "refrigerator",
+    "specs": [
+      {
+        "label": "Capacity",
+        "value": 650,
+        "unit": "l"
+      },
+      {
+        "label": "Width",
+        "value": 91.2,
+        "unit": "cm"
+      },
+      {
+        "label": "Height",
+        "value": 178,
+        "unit": "cm"
+      },
+      {
+        "label": "Depth",
+        "value": 72.3,
+        "unit": "cm"
+      },
+      {
+        "label": "Energy use",
+        "value": 540,
+        "unit": "kwh"
+      },
+      {
+        "label": "Noise",
+        "value": 39,
+        "unit": "db"
+      },
+      {
+        "label": "Warranty",
+        "value": 1,
+        "unit": "year"
+      }
+    ],
+    "features": [
+      "water dispenser",
+      "twin cooling",
+      "door alarm"
+    ]
+  },
+  {
+    "id": "fridge-580",
+    "name": "Top-mount refrigerator, 580 L",
+    "category": "refrigerator",
+    "specs": [
+      {
+        "label": "Capacity",
+        "value": 580,
+        "unit": "l"
+      },
+      {
+        "label": "Width",
+        "value": 83.6,
+        "unit": "cm"
+      },
+      {
+        "label": "Height",
+        "value": 186.2,
+        "unit": "cm"
+      },
+      {
+        "label": "Depth",
+        "value": 78.8,
+        "unit": "cm"
+      },
+      {
+        "label": "Energy use",
+        "value": 420,
+        "unit": "kwh"
+      },
+      {
+        "label": "Noise",
+        "value": 39,
+        "unit": "db"
+      },
+      {
+        "label": "Warranty",
+        "value": 1,
+        "unit": "year"
+      }
+    ],
+    "features": [
+      "twin cooling",
+      "inverter compressor",
+      "LED lighting"
+    ]
+  },
+  {
+    "id": "washer-11",
+    "name": "Front-load washer, 11 kg",
+    "category": "washer",
+    "specs": [
+      {
+        "label": "Capacity",
+        "value": 11,
+        "unit": "kg"
+      },
+      {
+        "label": "Width",
+        "value": 60,
+        "unit": "cm"
+      },
+      {
+        "label": "Height",
+        "value": 85,
+        "unit": "cm"
+      },
+      {
+        "label": "Depth",
+        "value": 60,
+        "unit": "cm"
+      },
+      {
+        "label": "Quick wash",
+        "value": 15,
+        "unit": "minute"
+      },
+      {
+        "label": "Noise",
+        "value": 53,
+        "unit": "db"
+      },
+      {
+        "label": "Warranty",
+        "value": 2,
+        "unit": "year"
+      }
+    ],
+    "features": [
+      "quick wash",
+      "steam cycle",
+      "auto detergent dosing"
+    ]
+  },
+  {
+    "id": "dryer-9",
+    "name": "Heat-pump dryer, 9 kg",
+    "category": "dryer",
+    "specs": [
+      {
+        "label": "Capacity",
+        "value": 9,
+        "unit": "kg"
+      },
+      {
+        "label": "Width",
+        "value": 60,
+        "unit": "cm"
+      },
+      {
+        "label": "Height",
+        "value": 85,
+        "unit": "cm"
+      },
+      {
+        "label": "Depth",
+        "value": 64,
+        "unit": "cm"
+      },
+      {
+        "label": "Noise",
+        "value": 64,
+        "unit": "db"
+      },
+      {
+        "label": "Warranty",
+        "value": 2,
+        "unit": "year"
+      }
+    ],
+    "features": [
+      "heat pump",
+      "anti-crease",
+      "lint filter alert"
+    ]
+  }
+]
