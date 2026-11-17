@@ -50,7 +50,7 @@ test("quantities reads numbers with their units", () => {
 test("every labelled case in the eval set gets the right verdict", () => {
   const result = run();
   assert.deepEqual(result.misses, []);
-  assert.ok(result.total >= 39);
+  assert.ok(result.total >= 44);
 });
 
 test("a price in words is still a price", () => {
@@ -81,4 +81,14 @@ test("a number with an unknown unit, or no unit, fails closed", () => {
   assert.deepEqual(rules("It uses 30% less energy."), ["unsupported-number"]);
   assert.deepEqual(rules("It has 4 shelves."), ["unsupported-number"]);
   assert.equal(checkReply("Perfect for 5 people.", [fridge], { allowedPlainNumbers: [5] }).ok, true);
+});
+
+test("a brand name is caught however it is spaced or hyphenated", () => {
+  assert.deepEqual(rules("It beats the Frost-line."), ["competitor"]);
+  assert.deepEqual(rules("Better than F r o s t l i n e."), ["competitor"]);
+});
+
+test("a price spelled out is caught without a currency word", () => {
+  assert.deepEqual(rules("It costs about two thousand."), ["price"]);
+  assert.deepEqual(rules("It's fifty percent off."), ["price"]);
 });

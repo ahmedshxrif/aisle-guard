@@ -37,6 +37,7 @@ export interface Verdict {
   violations: Violation[];
 }
 
+const NUMBER_WORD = "zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|half|dozen";
 const MONEY_WORDS = "aed|usd|sar|qar|kwd|bhd|omr|dhs?|dirhams?|dollars?|riyals?|dinars?|bucks";
 const PRICE_PATTERNS: RegExp[] = [
   new RegExp(`(?:${MONEY_WORDS}|[$€£])\\s*\\d[\\d,.]*`, "i"),
@@ -45,6 +46,9 @@ const PRICE_PATTERNS: RegExp[] = [
   new RegExp(`\\b(?:${MONEY_WORDS})\\b|[$€£]`, "i"),
   /\b(?:costs?|priced? (?:at|is)|price is|sells? for)\s+\d[\d,.]*/i,
   /\b\d{1,2}\s?% off\b/i,
+  // A price in words: "costs two thousand", "fifty percent off".
+  new RegExp(`\\b(?:costs?|priced?|prices?|pay|sells?|for (?:only|just))\\b[^.!?]{0,40}\\b(?:${NUMBER_WORD})\\b`, "i"),
+  /\b(?:percent|per cent)\b/i,
   /\b(?:on sale|discount(?:ed)?|cheapest|cheaper than|special offer)\b/i,
 ];
 
@@ -69,7 +73,6 @@ const UNITS = "litres?|liters?|l|kilograms?|kilos?|kg|centimetres?|centimeters?|
 // and never from the middle of a longer one. Otherwise "1 650 litres" would be read as 650.
 const QUANTITY = new RegExp(`(?<![\\d.,])(\\d{1,3}(?:[ ,]\\d{3})+(?:\\.\\d+)?|\\d+(?:[.,]\\d+)?)[\\s-]*(${UNITS})\\b`, "gi");
 // A figure spelled out ("twenty decibels") cannot be checked against the sheet, so it is not allowed.
-const NUMBER_WORD = "zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|half|dozen";
 const SPELLED_QUANTITY = new RegExp(`\\b(?:${NUMBER_WORD})(?:[\\s-]+(?:and[\\s-]+)?(?:${NUMBER_WORD}))*[\\s-]+(?:${UNITS})\\b`, "i");
 
 /**
@@ -79,8 +82,8 @@ const SPELLED_QUANTITY = new RegExp(`\\b(?:${NUMBER_WORD})(?:[\\s-]+(?:and[\\s-]
  */
 export function normalise(text: string): string {
   return text
-    .normalize("NFKC")
-    .replace(/[\u200B-\u200F\u202A-\u202E\u2060-\u2064\uFEFF\u00AD]/g, "")
+    .normalize("NFKD") // split accents off their letters, fold full-width and ligature forms
+    .replace(/[\p{Default_Ignorable_Code_Point}\p{M}]/gu, "") // drop invisible characters and the accents
     .replace(/[\u0660-\u0669]/g, (d) => String(d.charCodeAt(0) - 0x0660))
     .replace(/[\u06F0-\u06F9]/g, (d) => String(d.charCodeAt(0) - 0x06f0))
     .replace(/[\u066B\u066C]/g, ",");
@@ -129,9 +132,14 @@ export function checkReply(rawReply: string, products: Product[], policy: Partia
     }
   }
 
+  // Names are compared with everything but letters and digits removed, so "Frost-line" and
+  // "F r o s t l i n e" are caught along with "Frostline".
+  const squash = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const squashed = squash(reply);
   for (const name of rules.competitors) {
-    const hit = reply.match(new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i"));
-    if (hit) violations.push({ rule: "competitor", excerpt: hit[0], detail: "Never name another brand. Talk about what this product does well instead." });
+    if (squash(name) && squashed.includes(squash(name))) {
+      violations.push({ rule: "competitor", excerpt: name, detail: "Never name another brand. Talk about what this product does well instead." });
+    }
   }
 
   const allowed = [...products.flatMap((p) => p.specs), ...rules.allowedNumbers];

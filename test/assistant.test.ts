@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { answer, BudgetGuard, scriptedModel, willItFit, findProduct, type Session } from "../src/index.ts";
+import { answer, BudgetGuard, costOf, scriptedModel, willItFit, findProduct, type Session } from "../src/index.ts";
 
 const fresh = (): Session => ({ history: [] });
 const never = scriptedModel(() => { throw new Error("the model should not be called"); });
@@ -98,7 +98,24 @@ test("only recent turns are sent to the model", async () => {
   assert.equal(sent, 13);
 });
 
-test("a very long question is not sent to the model", async () => {
-  const result = await answer("fridge ".repeat(200), fresh(), { model: never });
+test("a very long question is not sent to the model, and is not kept in the history", async () => {
+  const session = fresh();
+  const result = await answer("fridge ".repeat(200), session, { model: never });
   assert.equal(result.source, "rule");
+  assert.equal(session.history.length, 0);
+});
+
+test("the budget is settled with what the call really cost", async () => {
+  const budget = new BudgetGuard({ monthlyCapUsd: 1, reserveShare: 0 });
+  const model = scriptedModel(() => "It holds 650 l.", 0.05);
+  await answer("Tell me about the fridge", fresh(), { model, budget, costPerCallUsd: 0.002 });
+  assert.ok(Math.abs(budget.committedUsd() - 0.05) < 1e-9);
+});
+
+test("cost is worked out from token counts, with cached input priced lower", () => {
+  const plain = costOf("claude-haiku-4-5", { input_tokens: 1_000_000, output_tokens: 0 });
+  const cached = costOf("claude-haiku-4-5", { input_tokens: 0, output_tokens: 0, cache_read_input_tokens: 1_000_000 });
+  assert.equal(plain, 1);
+  assert.ok(Math.abs(cached - 0.1) < 1e-9);
+  assert.equal(costOf("some-unknown-model", { input_tokens: 1_000_000, output_tokens: 0 }), 4);
 });

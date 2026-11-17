@@ -13,8 +13,36 @@ export interface ModelRequest {
   messages: Turn[];
 }
 
+export interface ModelReply {
+  text: string;
+  /** What the call really cost, when the model can report it. Used to settle the budget. */
+  costUsd?: number;
+}
+
 export interface Model {
-  reply(request: ModelRequest): Promise<string>;
+  reply(request: ModelRequest): Promise<ModelReply>;
+}
+
+/** Price per million tokens, input and output. Unknown models fall back to the most expensive row. */
+const PRICES: Record<string, [number, number]> = {
+  "claude-haiku-4-5": [1, 5],
+  "claude-haiku-5-5": [0.1, 0.5],
+  "claude-sonnet-5-5": [2, 10],
+  "claude-opus-5-5": [4, 20],
+};
+
+interface Usage {
+  input_tokens: number;
+  output_tokens: number;
+  cache_creation_input_tokens?: number | null;
+  cache_read_input_tokens?: number | null;
+}
+
+/** The cost of one call from its token counts. Cached reads are cheap; writing the cache costs a little more. */
+export function costOf(model: string, usage: Usage): number {
+  const [input, output] = PRICES[model] ?? [4, 20];
+  const tokens = usage.input_tokens + (usage.cache_creation_input_tokens ?? 0) * 1.25 + (usage.cache_read_input_tokens ?? 0) * 0.1;
+  return (tokens * input + usage.output_tokens * output) / 1_000_000;
 }
 
 export class ModelDeclined extends Error {
@@ -46,16 +74,17 @@ export function anthropicModel(options: AnthropicModelOptions = {}): Model {
         messages,
       });
       if (response.stop_reason === "refusal") throw new ModelDeclined();
-      return response.content
+      const text = response.content
         .filter((block) => block.type === "text")
         .map((block) => block.text)
         .join(" ")
         .trim();
+      return { text, costUsd: costOf(model, response.usage) };
     },
   };
 }
 
 /** A scripted stand-in for the model, used by the tests and by the offline chat. */
-export function scriptedModel(script: (request: ModelRequest) => string): Model {
-  return { reply: async (request) => script(request) };
+export function scriptedModel(script: (request: ModelRequest) => string, costUsd?: number): Model {
+  return { reply: async (request) => ({ text: script(request), costUsd }) };
 }

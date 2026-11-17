@@ -1,19 +1,30 @@
 {
   "name": "aisle-guard",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Server-side guardrails for AI shopping assistants: no prices, no competitor names, no claims the spec sheet doesn't back.",
   "type": "module",
   "license": "MIT",
   "author": "Ahmed Farahat",
-  "engines": { "node": ">=24" },
-  "bin": { "aisle-guard": "src/cli.ts" },
-  "exports": { ".": "./src/index.ts" },
+  "engines": {
+    "node": ">=24"
+  },
+  "bin": {
+    "aisle-guard": "src/cli.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "test": "node --test test/*.test.ts",
     "eval": "node eval/run.ts",
     "typecheck": "tsc --noEmit",
     "chat": "node src/cli.ts chat"
   },
-  "dependencies": { "@anthropic-ai/sdk": "^0.132.1" },
-  "devDependencies": { "@types/node": "^24.0.0", "typescript": "^5.9.0" }
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.132.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  }
 }

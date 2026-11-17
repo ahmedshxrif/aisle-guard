@@ -81,16 +81,18 @@ export function fallbackReply(product: Product | undefined): string {
 export async function answer(rawQuestion: string, session: Session, options: AssistantOptions): Promise<Answer> {
   const question = normalise(rawQuestion).trim();
   const products = options.products ?? defaultCatalog;
-  const focus = pickFocus(question, products, session.focus);
-  session.focus = focus;
+  // An over-long question is turned away before it is stored, so it can never ride along
+  // in the history of a later, paid call.
+  if (question.length > MAX_QUESTION_CHARS) {
+    return { text: "That was a lot to take in. Could you ask me one thing at a time?", source: "rule", caught: [], focus: session.focus };
+  }
   const finish = (text: string, source: Answer["source"], caught: Violation[] = []): Answer => {
     session.history.push({ role: "user", content: question }, { role: "assistant", content: text });
     return { text, source, caught, focus };
   };
 
-  if (question.length > MAX_QUESTION_CHARS) {
-    return finish("That was a lot to take in. Could you ask me one thing at a time?", "rule");
-  }
+  const focus = pickFocus(question, products, session.focus);
+  session.focus = focus;
 
   // 1. Things the server answers itself, with no model call at all.
   if (PRICE_QUESTION.test(question)) {
@@ -113,10 +115,13 @@ export async function answer(rawQuestion: string, session: Session, options: Ass
   const ask = async (messages: Turn[]): Promise<string | null> => {
     const reservation = options.budget?.tryReserve(cost);
     if (options.budget && !reservation) return null; // out of budget
+    let spent = cost; // if the call fails we cannot know what it cost, so the estimate stands
     try {
-      return await options.model.reply({ system, messages });
+      const reply = await options.model.reply({ system, messages });
+      spent = reply.costUsd ?? cost;
+      return reply.text;
     } finally {
-      if (reservation) options.budget!.settle(reservation, cost);
+      if (reservation) options.budget!.settle(reservation, spent);
     }
   };
 

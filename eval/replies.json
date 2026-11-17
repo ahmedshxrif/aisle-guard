@@ -253,5 +253,40 @@
     "expect": [
       "unsupported-number"
     ]
+  },
+  {
+    "reply": "It costs about two thousand.",
+    "product": "fridge-650",
+    "expect": [
+      "price"
+    ]
+  },
+  {
+    "reply": "It's fifty percent off.",
+    "product": "fridge-650",
+    "expect": [
+      "price"
+    ]
+  },
+  {
+    "reply": "It beats the Frost-line.",
+    "product": "fridge-650",
+    "expect": [
+      "competitor"
+    ]
+  },
+  {
+    "reply": "Better than F r o s t l i n e.",
+    "product": "fridge-650",
+    "expect": [
+      "competitor"
+    ]
+  },
+  {
+    "reply": "Only 2,199 dir\u034fhams.",
+    "product": "fridge-650",
+    "expect": [
+      "price"
+    ]
   }
 ]

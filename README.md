@@ -71,8 +71,8 @@ git clone https://github.com/ahmedshxrif/aisle-guard
 cd aisle-guard
 npm install
 
-npm test          # 32 tests
-npm run eval      # 39 labelled replies, every verdict checked
+npm test          # 36 tests
+npm run eval      # 44 labelled replies, every verdict checked
 npm run chat      # talk to it in the terminal
 ```
 
@@ -116,7 +116,7 @@ console.log(reply.text, reply.source, reply.caught);
 
 ## The spending cap
 
-`BudgetGuard` reserves money before every model call, including the retry, and settles it afterwards, so two conversations arriving at the same moment can never both spend the last of the budget. When the month's cap is reached the assistant stops calling the model and answers from the spec sheet. A slice of the cap, 10% by default, is never spent at all.
+`BudgetGuard` reserves money before every model call, including the retry, and settles it afterwards with what the call really cost, worked out from its token counts, so two conversations arriving at the same moment can never both spend the last of the budget. When the month's cap is reached the assistant stops calling the model and answers from the spec sheet. A slice of the cap, 10% by default, is never spent at all.
 
 ## What's inside
 
@@ -128,7 +128,7 @@ console.log(reply.text, reply.source, reply.caught);
 | `src/budget.ts` | The spending cap |
 | `src/model.ts` | The model behind a one-method interface, plus a scripted stand-in for tests |
 | `src/catalog.ts` | A small made-up catalogue |
-| `eval/replies.json` | 39 replies labelled with the rules they should break, including tricks such as prices written in words |
+| `eval/replies.json` | 44 replies labelled with the rules they should break, including tricks such as prices written in words |
 
 ## Limits
 
